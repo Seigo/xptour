@@ -23,6 +23,7 @@ class App extends Component {
 
   handleMapLoad = (map) => {
     this._mapComponent = map;
+    let self = this
 
     if (map) {
       console.log(map);
@@ -35,11 +36,24 @@ class App extends Component {
           };
 
           map.panTo(pos);
-          // new google.maps.Marker({
-          //   position: pos,
-          //   map: map,
-          //   icon: 'https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png'
-          // }).setMap(map);
+          self.setState({
+            markers: [
+              {
+                position: pos,
+                key: 'HEre',
+                defaultAnimation: 2,
+                icon: 'https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png'
+              }
+            ]
+          })
+
+          // var service = new google.maps.places.PlacesService(map);
+          // service.nearbySearch({
+          //   location: pos,
+          //   radius: 500,
+          //   type: ['restaurant']
+          // }, callback);
+          
         })
       }
     }
