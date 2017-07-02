@@ -47,17 +47,47 @@ class App extends Component {
             ]
           })
 
-          // var service = new google.maps.places.PlacesService(map);
-          // service.nearbySearch({
-          //   location: pos,
-          //   radius: 500,
-          //   type: ['restaurant']
-          // }, callback);
-          
+          var service = new window.google.maps.places.PlacesService(map.context.__SECRET_MAP_DO_NOT_USE_OR_YOU_WILL_BE_FIRED);
+          service.nearbySearch({
+            location: pos,
+            radius: 500,
+            type: ['restaurant']
+          }, self.callback);
         })
       }
     }
   }
+
+  callback = (results, status) => {
+    if (status === window.google.maps.places.PlacesServiceStatus.OK) {
+      for (var i = 0; i < results.length; i++) {
+        this.createMarker(results[i]);
+      }
+    }
+  }
+
+  createMarker = (place) => {
+    let { markers } = this.state
+    var placeLoc = place.geometry.location;
+    console.log('', place)
+    var m = {
+      position: place.geometry.location,
+      key: place.name,
+      defaultAnimation: 2
+    }
+    markers.push(m)
+
+    this.setState({
+      markers: markers
+    })
+
+    // google.maps.event.addListener(marker, 'mouseover', function() {
+    //   infowindow.setContent(place.name +
+    //                         ' (' + place.rating + ')');
+    //   infowindow.open(map, this);
+    // });
+  }
+
 
   render() {
     return (
