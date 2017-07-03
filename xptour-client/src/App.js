@@ -17,18 +17,17 @@ class App extends Component {
         //   key: `Taiwan`,
         //   defaultAnimation: 2,
         // }
-      ]
+      ],
+      infowindow: undefined
     };
   }
 
   handleMapLoad = (map) => {
-    this._mapComponent = map;
     let self = this
 
     if (map) {
-      console.log(map);
+      // console.log(map);
       if (navigator.geolocation) {
-          
         navigator.geolocation.getCurrentPosition(function(position) {
           var pos = {
             lat: position.coords.latitude,
@@ -36,13 +35,18 @@ class App extends Component {
           };
 
           map.panTo(pos);
+
           self.setState({
             markers: [
               {
                 position: pos,
-                key: 'HEre',
+                key: 'User position',
                 defaultAnimation: 2,
-                icon: 'https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png'
+                icon: 'https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png',
+                infowindow: {
+                  visible: true,
+                  name: 'You are here'
+                }
               }
             ]
           })
@@ -68,30 +72,58 @@ class App extends Component {
 
   createMarker = (place) => {
     let { markers } = this.state
-    var placeLoc = place.geometry.location;
     console.log('', place)
     var m = {
       position: place.geometry.location,
       key: place.name,
-      defaultAnimation: 2
+      defaultAnimation: 2,
+      infowindow: {
+        visible: false,
+        name: place.name
+      }
     }
+
     markers.push(m)
 
     this.setState({
       markers: markers
     })
-
-    // google.maps.event.addListener(marker, 'mouseover', function() {
-    //   infowindow.setContent(place.name +
-    //                         ' (' + place.rating + ')');
-    //   infowindow.open(map, this);
-    // });
   }
 
+  handleMarkerMouseOver = (marker) => {
+    let { markers } = this.state
+    let index = undefined
+    markers.forEach((m, i, arr) => {
+      if (m.key === marker.key) {
+        index = i
+        return
+      }
+    })
+    markers[index].infowindow.visible = true
+    this.setState({
+      markers: markers
+    })
+  }
+
+  handleMarkerMouseOut = (marker) => {
+    let { markers } = this.state
+    let index = undefined
+    markers.forEach((m, i, arr) => {
+      if (m.key === marker.key) {
+        index = i
+        return
+      }
+    })
+    markers[index].infowindow.visible = false
+    this.setState({
+      markers: markers
+    })
+  }
 
   render() {
+    let { infowindow } = this.state
+
     return (
-      // <div style={{height: `100%`}}>
       <div style={{height: `800px`}}>
         <Map
           containerElement={
@@ -104,7 +136,10 @@ class App extends Component {
           //onMapClick={this.handleMapClick}
           markers={this.state.markers}
           //onMarkerRightClick={this.handleMarkerRightClick}
+          onMarkerMouseOver={this.handleMarkerMouseOver}
+          onMarkerMouseOut={this.handleMarkerMouseOut}
         />
+        {/*{{ _infowindow }}*/}
       </div>
     );
   }

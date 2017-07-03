@@ -1,5 +1,5 @@
 import React from 'react';
-import { withGoogleMap, GoogleMap, Marker } from 'react-google-maps'
+import { withGoogleMap, GoogleMap, Marker, InfoWindow } from 'react-google-maps'
 
 const Map = withGoogleMap(props => (
   <GoogleMap
@@ -12,8 +12,20 @@ const Map = withGoogleMap(props => (
       <Marker
         {...marker}
         onRightClick={() => props.onMarkerRightClick(marker)}
-      />
+        onMouseOver={() => {props.onMarkerMouseOver(marker)}}
+        onMouseOut={() => {props.onMarkerMouseOut(marker)}}
+      >
+        {
+          marker.infowindow && marker.infowindow.visible
+              ? (<InfoWindow
+                  >
+                    <div>{marker.infowindow.name}</div>
+                  </InfoWindow>)
+              : <div id='empty infowindow'></div>
+        }
+      </Marker>
     ))}
+    
   </GoogleMap>
 ));
 
