@@ -8,17 +8,7 @@ class App extends Component {
     super(props)
     
     this.state = {
-      markers: [
-        // {
-        //   position: {
-        //     lat: 25.0112183,
-        //     lng: 121.52067570000001,
-        //   },
-        //   key: `Taiwan`,
-        //   defaultAnimation: 2,
-        // }
-      ],
-      infowindow: undefined
+      markers: []
     };
   }
 
@@ -73,13 +63,21 @@ class App extends Component {
   createMarker = (place) => {
     let { markers } = this.state
     console.log('', place)
+    // const infoWindowText = place.name + ' (' +
+    //         place.rating ? place.rating : 'not rated' +
+    //         ')'
+    // // result: 4.6
+    const infoWindowText = place.name + ' (' +
+            (place.rating ? place.rating : 'not rated') +
+            ')'
+    // result: Pizzaria Massa Fera (4.6)
     var m = {
       position: place.geometry.location,
       key: place.name,
       defaultAnimation: 2,
       infowindow: {
         visible: false,
-        name: place.name
+        name: infoWindowText
       }
     }
 
@@ -121,8 +119,6 @@ class App extends Component {
   }
 
   render() {
-    let { infowindow } = this.state
-
     return (
       <div style={{height: `800px`}}>
         <Map
@@ -133,13 +129,10 @@ class App extends Component {
             <div style={{ height: `100%` }} />
           }
           onMapLoad={this.handleMapLoad}
-          //onMapClick={this.handleMapClick}
           markers={this.state.markers}
-          //onMarkerRightClick={this.handleMarkerRightClick}
           onMarkerMouseOver={this.handleMarkerMouseOver}
           onMarkerMouseOut={this.handleMarkerMouseOut}
         />
-        {/*{{ _infowindow }}*/}
       </div>
     );
   }
