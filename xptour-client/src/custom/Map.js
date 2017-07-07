@@ -1,7 +1,9 @@
 import React from 'react';
 import { withGoogleMap, GoogleMap, Marker, InfoWindow } from 'react-google-maps'
+import './Map.css'
 
 const Map = withGoogleMap(props => (
+
   <GoogleMap
     ref={props.onMapLoad}
     defaultZoom={16}
@@ -11,6 +13,7 @@ const Map = withGoogleMap(props => (
     {props.markers.map(marker => (
       <Marker
         {...marker}
+        onClick={() => console.log(marker)}
         onRightClick={() => props.onMarkerRightClick(marker)}
         onMouseOver={() => {props.onMarkerMouseOver(marker)}}
         onMouseOut={() => {props.onMarkerMouseOut(marker)}}
@@ -27,6 +30,7 @@ const Map = withGoogleMap(props => (
     ))}
     
   </GoogleMap>
+
 ));
 
 export default Map

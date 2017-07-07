@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import './App.css';
 import { Map } from './custom'
+import { MoreInfoBox } from './MoreInfoBox'
 
 class App extends Component {
 
@@ -8,7 +9,13 @@ class App extends Component {
     super(props)
     
     this.state = {
-      markers: []
+      markers: [],
+      moreInfoBox: {
+        visualState: 'invisible'
+      },
+      map: {
+        visualState: 'default'
+      }
     };
   }
 
@@ -62,22 +69,16 @@ class App extends Component {
 
   createMarker = (place) => {
     let { markers } = this.state
-    console.log('', place)
-    // const infoWindowText = place.name + ' (' +
-    //         place.rating ? place.rating : 'not rated' +
-    //         ')'
-    // // result: 4.6
-    const infoWindowText = place.name + ' (' +
-            (place.rating ? place.rating : 'not rated') +
-            ')'
-    // result: Pizzaria Massa Fera (4.6)
+    
     var m = {
       position: place.geometry.location,
       key: place.name,
       defaultAnimation: 2,
       infowindow: {
         visible: false,
-        name: infoWindowText
+        name: place.name + ' (' +
+            (place.rating ? place.rating : 'not rated') +
+            ')'
       }
     }
 
@@ -118,21 +119,57 @@ class App extends Component {
     })
   }
 
+  onButtonClicked = () => {
+    let mapVisualState = this.state.map.visualState
+    let moreInfoBoxVisualState = this.state.moreInfoBox.visualState
+
+    if (mapVisualState === 'default') {
+      mapVisualState = 'smaller'
+    } else {
+      mapVisualState = 'default'
+    }
+
+    if (moreInfoBoxVisualState === 'invisible') {
+      moreInfoBoxVisualState = 'visible'
+    } else {
+      moreInfoBoxVisualState = 'invisible'
+    }
+
+    let { map, moreInfoBox }  = this.state
+    map.visualState = mapVisualState
+    moreInfoBox.visualState = moreInfoBoxVisualState
+    this.setState({
+      map: map,
+      moreInfoBox: moreInfoBox
+    })
+  }
+  
   render() {
+    console.log()
     return (
       <div style={{height: `800px`}}>
-        <Map
-          containerElement={
-            <div style={{ height: `100%` }} />
-          }
-          mapElement={
-            <div style={{ height: `100%` }} />
-          }
-          onMapLoad={this.handleMapLoad}
-          markers={this.state.markers}
-          onMarkerMouseOver={this.handleMarkerMouseOver}
-          onMarkerMouseOut={this.handleMarkerMouseOut}
+        <button onClick={this.onButtonClicked}>
+          I'm a button
+        </button>
+        <MoreInfoBox
+          visualState={this.state.moreInfoBox.visualState}
         />
+        <div className={this.state.map.visualState}>
+          <Map
+            visualState={this.state.map.visualState}
+            containerElement={
+              <div style={{ height: `100%` }} />
+            }
+            mapElement={
+              <div style={{ height: `100%` }} />
+            }
+            onMapLoad={this.handleMapLoad}
+            markers={this.state.markers}
+            onMarkerMouseOver={this.handleMarkerMouseOver}
+            onMarkerMouseOut={this.handleMarkerMouseOut}
+          />
+        </div>
+        
       </div>
     );
   }
